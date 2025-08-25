@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "memo-mcp": {
+      "command": "docker",
+      "args": [
+        "exec",
+        "-i",
+        "d5f7356fe506",
+        "php",
+        "/var/www/html/pfinal-memo-mcp/stdio-server.php"
+      ],
+      "env": {}
+    }
+  }
+}

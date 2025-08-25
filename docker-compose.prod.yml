@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  memo-mcp-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    container_name: memo-mcp-server-prod
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+    environment:
+      - NODE_ENV=production
+      - PHP_MEMORY_LIMIT=512M
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - memo-network
+
+  # 可选：添加 Nginx 反向代理
+  nginx:
+    image: nginx:alpine
+    container_name: memo-mcp-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - memo-mcp-server
+    restart: unless-stopped
+    networks:
+      - memo-network
+
+networks:
+  memo-network:
+    driver: bridge
+
+volumes:
+  data:
+  logs:

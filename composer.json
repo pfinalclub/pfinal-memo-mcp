@@ -1,0 +1,23 @@
+{
+    "name": "pfinal/memo-mcp",
+    "description": "A simple memo service using MCP protocol",
+    "type": "project",
+    "require": {
+        "php": ">=8.2",
+        "workerman/workerman": "^4.0",
+        "pfinalclub/php-mcp": "dev-master",
+        "monolog/monolog": "^3.0"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/pfinalclub/php-mcp.git"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "PFinal\\Memo\\": "src/"
+        }
+    },
+    "minimum-stability": "dev"
+}
