@@ -13,7 +13,7 @@ $descriptorspec = [
 ];
 
 echo "启动 MCP 服务器...\n";
-$process = proc_open("php stdio-server.php", $descriptorspec, $pipes);
+$process = proc_open("php server.php", $descriptorspec, $pipes);
 
 if (!is_resource($process)) {
     die("无法启动服务器进程\n");

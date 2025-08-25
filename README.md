@@ -6,6 +6,11 @@
 
 - ✅ 获取所有备忘录 (`memo.list`)
 - ✅ 搜索备忘录 (`memo.search`)
+- ✅ 备忘录创建提示 (`memo.create_prompt`)
+- ✅ 备忘录搜索提示 (`memo.search_prompt`)
+- ✅ 备忘录管理指南 (`memo.management_prompt`)
+- ✅ 备忘录模板 (`memo.template_prompt`)
+- ✅ 系统帮助信息 (`memo.help_prompt`)
 - ✅ 完整的错误处理
 - ✅ 数据验证
 - ✅ 支持 MCP 协议

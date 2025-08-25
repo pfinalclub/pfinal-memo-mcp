@@ -10,10 +10,6 @@ use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
 try {
-    // 检查命令行参数
-    $args = $argv ?? [];
-    $command = $args[1] ?? 'start';
-    
     // 创建日志记录器
     $logger = new Logger('memo-mcp-server');
     $logger->pushHandler(new StreamHandler('php://stderr', Logger::INFO));

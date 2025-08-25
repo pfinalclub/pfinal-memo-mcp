@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "memo-mcp": {
+      "command": "php",
+      "args": [
+        "/Users/pfinal/www/pfinal-memo-mcp/cursor-memo-server.php"
+      ],
+      "env": {
+        "PHP_MEMORY_LIMIT": "512M"
+      },
+      "transport": "stdio"
+    }
+  }
+}

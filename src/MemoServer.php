@@ -51,7 +51,6 @@ class MemoServer
     /**
      * 搜索备忘录
      * 
-     * @param string $keyword 搜索关键词
      * @return array 搜索结果
      */
     #[McpTool(
@@ -60,7 +59,7 @@ class MemoServer
     )]
     public function searchMemos(
         #[Schema(description: '搜索关键词')]
-        string $keyword
+        string $keyword = ''
     ): array {
         try {
             if (empty($keyword)) {
