@@ -4,6 +4,69 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 use PFinal\Memo\MemoServer;
 
+// 检查 MemoServer 是否已经启动
+$serverStatusFile = sys_get_temp_dir() . '/memo-mcp-server-status.json';
+
+// 检查服务器状态
+function checkServerStatus() {
+    global $serverStatusFile;
+    
+    if (file_exists($serverStatusFile)) {
+        $status = json_decode(file_get_contents($serverStatusFile), true);
+        if ($status && isset($status['pid']) && isset($status['start_time'])) {
+            // 检查进程是否还在运行
+            if (posix_kill($status['pid'], 0)) {
+                // 检查进程启动时间是否匹配
+                $currentPid = getmypid();
+                if ($status['pid'] === $currentPid) {
+                    return true; // 当前进程已经在运行
+                }
+                // 其他进程在运行，退出当前进程
+                fwrite(STDERR, "Memo MCP Server 已经在运行 (PID: {$status['pid']})\n");
+                exit(0);
+            } else {
+                // 进程不存在，清理状态文件
+                unlink($serverStatusFile);
+            }
+        }
+    }
+    return false;
+}
+
+// 记录服务器启动状态
+function recordServerStatus() {
+    global $serverStatusFile;
+    
+    $status = [
+        'pid' => getmypid(),
+        'start_time' => time(),
+        'version' => '1.0.0'
+    ];
+    
+    file_put_contents($serverStatusFile, json_encode($status));
+}
+
+// 清理服务器状态
+function cleanupServerStatus() {
+    global $serverStatusFile;
+    
+    if (file_exists($serverStatusFile)) {
+        unlink($serverStatusFile);
+    }
+}
+
+// 检查服务器状态
+if (checkServerStatus()) {
+    fwrite(STDERR, "Memo MCP Server 已经在运行中\n");
+    exit(0);
+}
+
+// 记录启动状态
+recordServerStatus();
+
+// 注册清理函数
+register_shutdown_function('cleanupServerStatus');
+
 // 创建 MemoServer 实例
 $memoServer = new MemoServer();
 
