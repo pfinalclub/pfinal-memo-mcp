@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  # Memo MCP Server - 开发环境
+  memo-mcp-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: memo-mcp-dev
+    ports:
+      - "8891:8888"
+    volumes:
+      - ./logs:/var/log/pfinal-memo-mcp
+    environment:
+      - APP_ENV=development
+      - PHP_MEMORY_LIMIT=512M
+    restart: unless-stopped
+    networks:
+      - memo-mcp-network
+    profiles:
+      - dev
+
+  # Memo MCP Server - 生产环境
+  memo-mcp-prod:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: memo-mcp-prod
+    ports:
+      - "8890:8888"
+    volumes:
+      - ./logs:/var/log/pfinal-memo-mcp
+    environment:
+      - APP_ENV=production
+      - PHP_MEMORY_LIMIT=1G
+    restart: unless-stopped
+    networks:
+      - memo-mcp-network
+    profiles:
+      - prod
+
+  # Memo MCP Server - TCP 模式
+  memo-mcp-tcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: memo-mcp-tcp
+    ports:
+      - "8889:8888"
+    volumes:
+      - ./logs:/var/log/pfinal-memo-mcp
+    environment:
+      - APP_ENV=production
+      - SERVER_MODE=tcp
+    restart: unless-stopped
+    networks:
+      - memo-mcp-network
+    command: ["php", "tcp-server.php"]
+    profiles:
+      - tcp
+
+networks:
+  memo-mcp-network:
+    driver: bridge
