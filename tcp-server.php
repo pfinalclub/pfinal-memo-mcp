@@ -1,66 +1,69 @@
 <?php
 
 /**
- * HTTP 模式的 MCP 服务器
- * 用于线上部署和公开使用
+ * TCP 模式的 MCP 服务器
+ * 使用 Workerman 实现 TCP 协议
  */
 
 require_once __DIR__ . '/vendor/autoload.php';
 
 use PFinal\Memo\MemoServer;
 use Workerman\Worker;
-use Workerman\Protocols\Http;
-use Workerman\Protocols\Http\Request;
-use Workerman\Protocols\Http\Response;
+use Workerman\Connection\TcpConnection;
 
 // 创建 Memo 服务器实例
 $memoServer = new MemoServer();
 
-// 创建 HTTP Worker
-$worker = new Worker('http://0.0.0.0:8888');
+// 创建 TCP Worker
+$worker = new Worker('tcp://0.0.0.0:8888');
 $worker->count = 4; // 4个进程
 
-// 处理请求
-$worker->onMessage = function($connection, Request $request) use ($memoServer) {
-    // 设置 CORS 头
-    $headers = [
-        'Content-Type' => 'application/json',
-        'Access-Control-Allow-Origin' => '*',
-        'Access-Control-Allow-Methods' => 'POST, GET, OPTIONS',
-        'Access-Control-Allow-Headers' => 'Content-Type, Authorization'
-    ];
-    
-    // 处理 OPTIONS 请求（CORS 预检）
-    if ($request->method() === 'OPTIONS') {
-        $connection->send(new Response(200, $headers, ''));
-        return;
+// 处理连接
+$worker->onConnect = function($connection) {
+    echo "新的 TCP 连接: " . $connection->getRemoteAddress() . "\n";
+};
+
+// 处理消息
+$worker->onMessage = function($connection, $data) use ($memoServer) {
+    try {
+        // 解析 JSON 数据
+        $request = json_decode($data, true);
+        
+        if (!$request) {
+            $response = [
+                'jsonrpc' => '2.0',
+                'id' => null,
+                'error' => [
+                    'code' => -32700,
+                    'message' => 'Parse error: Invalid JSON'
+                ]
+            ];
+            $connection->send(json_encode($response) . "\n");
+            return;
+        }
+        
+        // 处理 MCP 请求
+        $response = handleMcpRequest($memoServer, $request);
+        
+        // 发送响应
+        $connection->send(json_encode($response) . "\n");
+        
+    } catch (Exception $e) {
+        $response = [
+            'jsonrpc' => '2.0',
+            'id' => $request['id'] ?? null,
+            'error' => [
+                'code' => -32603,
+                'message' => 'Internal error: ' . $e->getMessage()
+            ]
+        ];
+        $connection->send(json_encode($response) . "\n");
     }
-    
-    // 只接受 POST 请求
-    if ($request->method() !== 'POST') {
-        $connection->send(new Response(405, $headers, json_encode([
-            'error' => 'Method not allowed',
-            'message' => 'Only POST requests are accepted'
-        ])));
-        return;
-    }
-    
-    // 获取请求内容
-    $content = $request->rawBody();
-    $data = json_decode($content, true);
-    
-    if (!$data) {
-        $connection->send(new Response(400, $headers, json_encode([
-            'error' => 'Invalid JSON',
-            'message' => 'Request body must be valid JSON'
-        ])));
-        return;
-    }
-    
-    // 处理 MCP 请求
-    $response = handleMcpRequest($memoServer, $data);
-    
-    $connection->send(new Response(200, $headers, json_encode($response)));
+};
+
+// 处理连接关闭
+$worker->onClose = function($connection) {
+    echo "TCP 连接关闭: " . $connection->getRemoteAddress() . "\n";
 };
 
 // 启动服务器
@@ -87,7 +90,7 @@ function handleMcpRequest($memoServer, $data) {
                         ]
                     ],
                     'serverInfo' => [
-                        'name' => 'Memo MCP Server',
+                        'name' => 'Memo MCP Server (TCP)',
                         'version' => '1.0.0'
                     ]
                 ]
@@ -112,7 +115,12 @@ function handleMcpRequest($memoServer, $data) {
                             'description' => '搜索备忘录',
                             'inputSchema' => [
                                 'type' => 'object',
-                                'properties' => []
+                                'properties' => [
+                                    'keyword' => [
+                                        'type' => 'string',
+                                        'description' => '搜索关键词'
+                                    ]
+                                ]
                             ]
                         ]
                     ]
@@ -152,7 +160,8 @@ function handleMcpRequest($memoServer, $data) {
                     
                 case 'memo.search':
                     try {
-                        $result = $memoServer->searchMemos();
+                        $keyword = $arguments['keyword'] ?? '';
+                        $result = $memoServer->searchMemos($keyword);
                         return [
                             'jsonrpc' => '2.0',
                             'id' => $id,

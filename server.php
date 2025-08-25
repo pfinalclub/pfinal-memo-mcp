@@ -13,11 +13,9 @@ try {
     $logger = new Logger('memo-mcp-server');
     $logger->pushHandler(new StreamHandler('php://stderr', Logger::INFO));
 
-    // 创建完整配置
+    // 创建 stdio 配置
     $config = new ServerConfig([
         'transport' => 'stdio',
-        'host' => '127.0.0.1',
-        'port' => 8080,
         'log_level' => 'info',
         'session' => [
             'backend' => 'memory',
@@ -40,7 +38,7 @@ try {
     $server->registerTool(new MemoServer());
 
     // 启动服务器
-    $logger->info('Starting Memo MCP server...');
+    $logger->info('Starting Memo MCP server (stdio mode)...');
     $server->start();
 } catch (Exception $e) {
     error_log("Fatal error: " . $e->getMessage());
