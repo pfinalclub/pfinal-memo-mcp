@@ -17,7 +17,7 @@ use Workerman\Protocols\Http\Response;
 $memoServer = new MemoServer();
 
 // 创建 HTTP Worker
-$worker = new Worker('http://0.0.0.0:8888');
+$worker = new Worker('http://0.0.0.0:8891');
 $worker->count = 4; // 4个进程
 
 // 处理请求

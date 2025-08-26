@@ -37,7 +37,21 @@ composer install
 
 ## 运行
 
-### 方案一：本地开发（推荐）
+### 方案一：Cursor 集成（推荐）
+
+启动轻量级 MCP Server（避免 Workerman 常驻进程）：
+```bash
+php cursor-memo-server.php
+```
+
+或者使用启动脚本：
+```bash
+./start-cursor-server.sh
+```
+
+这个版本不使用 Workerman，直接处理 stdio 通信，避免常驻进程问题。
+
+### 方案二：本地开发
 
 启动简化的 MCP Server：
 ```bash
@@ -79,17 +93,22 @@ php server.php
 
 ## 测试
 
-### 1. 基本功能测试
+### 1. 轻量级服务器测试（推荐）
+```bash
+php tests/test-cursor-server.php
+```
+
+### 2. 基本功能测试
 ```bash
 php tests/test-mcp.php
 ```
 
-### 2. 兼容性测试
+### 3. 兼容性测试
 ```bash
 php test-fix.php
 ```
 
-### 3. 服务器测试
+### 4. 服务器测试
 ```bash
 php test-server.php
 ```
