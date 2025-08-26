@@ -1,4 +1,7 @@
 ---
+alwaysApply: true
+---
+---
 Source: .ruler/instructions.md
 ---
 # Memo MCP Server 使用说明

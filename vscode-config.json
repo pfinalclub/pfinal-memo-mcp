@@ -1,0 +1,44 @@
+{
+    "tools": [
+        {
+            "name": "memo.list",
+            "description": "获取所有备忘录",
+            "parameters": {}
+        },
+        {
+            "name": "memo.search",
+            "description": "搜索备忘录",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "keyword": {
+                        "type": "string",
+                        "description": "搜索关键词"
+                    }
+                },
+                "required": ["keyword"]
+            }
+        }
+    ],
+    "server": {
+        "transport": "stdio",
+        "command": ["php", "server.php"],
+        "settings": {
+            "host": "127.0.0.1",
+            "port": 8080,
+            "stdio": {
+                "mode": "optimized",
+                "buffer_interval": 10,
+                "non_blocking": true
+            },
+            "session": {
+                "backend": "memory",
+                "ttl": 3600
+            },
+            "security": {
+                "rate_limit": 100,
+                "rate_window": 60
+            }
+        }
+    }
+}
