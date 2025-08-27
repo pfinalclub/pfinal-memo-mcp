@@ -21,38 +21,38 @@ Memo 数据服务
 ### 1. 安装 Node.js 依赖
 
 ```bash
+cd client/node
 npm install
 ```
 
 ### 2. 启动 PHP MCP 服务器
 
 ```bash
-php server.php start
+cd /path/to/pfinal-memo-mcp
+php server.php
 ```
 
-服务器将在 `ws://127.0.0.1:8899/memo` 启动。
+服务器将在 `ws://127.0.0.1:8899` 启动。
 
 ### 3. 配置 Cursor
 
-将 `cursor-config.json` 的内容复制到 Cursor 的 MCP 配置中：
-
-1. 打开 Cursor 设置
-2. 找到 MCP 配置部分
-3. 添加以下配置：
+将以下配置添加到 Cursor 的 MCP 配置中：
 
 ```json
 {
-    "mcpServers": {
-        "memo-server": {
-            "command": "node",
-            "args": ["cursor-stdio-client.js"],
-            "env": {},
-            "description": "Memo MCP Server - 备忘录服务",
-            "transport": "stdio"
-        }
+  "mcpServers": {
+    "memo-server": {
+      "command": "node",
+      "args": ["/absolute/path/to/cursor-stdio-client.js"],
+      "env": {},
+      "description": "Memo MCP Server - 备忘录服务",
+      "transport": "stdio"
     }
+  }
 }
 ```
+
+**重要：** 确保 `args` 中的路径是 `cursor-stdio-client.js` 文件的绝对路径。
 
 ## 使用方法
 
@@ -63,27 +63,11 @@ php server.php start
 1. **memo.list** - 获取所有备忘录
 2. **memo.search** - 搜索备忘录（需要提供 keyword 参数）
 
-### 命令行测试
-
-您也可以使用命令行客户端进行测试：
-
-```bash
-# 交互模式
-npm run interactive
-
-# 获取所有备忘录
-npm run list
-
-# 搜索备忘录
-npm run search "关键词"
-```
-
 ## 文件说明
 
 - `cursor-stdio-client.js` - Cursor stdio 桥接客户端
-- `cursor-client.js` - 完整的 WebSocket 客户端（用于测试）
-- `cursor-config.json` - Cursor 配置文件
 - `package.json` - Node.js 项目配置
+- `README-Cursor.md` - 本说明文档
 
 ## 故障排除
 
@@ -91,7 +75,7 @@ npm run search "关键词"
 
 确保 PHP 服务器正在运行：
 ```bash
-php server.php start
+php server.php
 ```
 
 ### 2. 端口冲突
@@ -102,25 +86,31 @@ php server.php start
 
 确保使用 Node.js 18.0.0 或更高版本。
 
-## 开发说明
+### 4. 路径问题
 
-### 添加新工具
-
-1. 在 `src/MemoServer.php` 中添加新的工具方法
-2. 在 `cursor-stdio-client.js` 的 `handleToolCall` 方法中添加处理逻辑
-3. 在 `handleToolList` 方法中添加工具定义
-
-### 调试
-
-使用以下命令启动调试模式：
-```bash
-node cursor-stdio-client.js
-```
+确保 Cursor 配置中的路径是绝对路径，并且文件存在。
 
 ## 技术细节
 
 - **传输协议**: WebSocket (服务器) + stdio (Cursor 集成)
 - **数据格式**: JSON-RPC 2.0
 - **认证**: 无（开发环境）
-- **超时**: 10 秒
+- **超时**: 5 秒
 - **重连**: 自动重连机制
+- **WebSocket URL**: `ws://127.0.0.1:8899`
+
+## 开发说明
+
+### 添加新工具
+
+1. 在 `src/MemoServer.php` 中添加新的工具方法
+2. 使用 `#[McpTool]` 属性定义工具
+3. 使用 `#[Schema]` 属性定义参数
+
+## 更新日志
+
+### v1.0.0
+- 初始版本
+- 支持 memo.list 和 memo.search 工具
+- 完整的 Cursor 集成
+- 自动重连和错误处理

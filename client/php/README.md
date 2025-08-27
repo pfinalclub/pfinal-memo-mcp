@@ -27,7 +27,7 @@ composer install
 
 ```bash
 # 在项目根目录
-php server.php start
+php server.php
 ```
 
 ## 使用方法
@@ -44,15 +44,7 @@ php console.php
 - `help` - 显示帮助信息
 - `exit` - 退出程序
 
-### 2. 简单测试
-
-```bash
-php simple-test.php
-```
-
-运行自动化的测试用例，验证客户端功能。
-
-### 3. 编程方式使用
+### 2. 编程方式使用
 
 ```php
 <?php
@@ -61,7 +53,7 @@ require_once 'vendor/autoload.php';
 use PFinal\Memo\Client\MemoClient;
 use React\EventLoop\Loop;
 
-$client = new MemoClient('ws://127.0.0.1:8899/memo');
+$client = new MemoClient('ws://127.0.0.1:8899');
 
 $client->connect()->then(
     function () use ($client) {
@@ -88,7 +80,6 @@ Loop::run();
 
 - `MemoClient.php` - 核心客户端类
 - `console.php` - 交互式控制台
-- `simple-test.php` - 自动化测试脚本
 - `composer.json` - 依赖管理
 - `README.md` - 使用说明
 
@@ -98,7 +89,7 @@ Loop::run();
 
 #### 构造函数
 ```php
-public function __construct(string $serverUrl = 'ws://127.0.0.1:8899/memo')
+public function __construct(string $serverUrl = 'ws://127.0.0.1:8899')
 ```
 
 #### 方法
@@ -198,7 +189,6 @@ composer update
 ### 添加新功能
 1. 在 `MemoClient` 类中添加新方法
 2. 在 `console.php` 中添加对应的命令处理
-3. 在 `simple-test.php` 中添加测试用例
 
 ### 调试
 使用以下命令启动调试模式：

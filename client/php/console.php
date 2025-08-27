@@ -13,7 +13,7 @@ class MemoConsole
     private MemoClient $client;
     private bool $running = true;
 
-    public function __construct(string $serverUrl = 'ws://127.0.0.1:8899/memo')
+    public function __construct(string $serverUrl = 'ws://127.0.0.1:8899')
     {
         $this->client = new MemoClient($serverUrl);
     }

@@ -36,15 +36,8 @@ $config = new ServerConfig([
 // 创建 MCP 服务器
 $server = new Server($config, $logger);
 
-// 由于 PFPMcp 的 Server 类没有 registerTool 方法，我们需要直接访问 ToolManager
-// 通过反射来注册工具
-$reflection = new ReflectionClass($server);
-$toolManagerProperty = $reflection->getProperty('toolManager');
-$toolManagerProperty->setAccessible(true);
-$toolManager = $toolManagerProperty->getValue($server);
-
 // 注册备忘录工具
-$toolManager->registerTool(new MemoServer());
+$server->registerTool(new MemoServer());
 
 // 启动服务器
 $logger->info('Starting Memo MCP server...');

@@ -20,7 +20,7 @@ class MemoClient
     private array $pendingRequests = [];
     private Connector $connector;
 
-    public function __construct(string $serverUrl = 'ws://127.0.0.1:8899/memo')
+    public function __construct(string $serverUrl = 'ws://127.0.0.1:8899')
     {
         $this->serverUrl = $serverUrl;
         $this->connector = new Connector();
