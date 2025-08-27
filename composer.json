@@ -6,7 +6,8 @@
         "php": ">=8.2",
         "workerman/workerman": "^4.0",
         "pfinalclub/php-mcp": "dev-master",
-        "monolog/monolog": "^3.0"
+        "monolog/monolog": "^3.0",
+        "league/commonmark": "^2.8@dev"
     },
     "repositories": [
         {
