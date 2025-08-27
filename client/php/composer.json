@@ -1,0 +1,23 @@
+{
+    "name": "pfinal/memo-php-client",
+    "description": "PHP client for Memo MCP server",
+    "type": "library",
+    "require": {
+        "php": ">=8.2",
+        "cboden/ratchet": "^0.4.4",
+        "react/event-loop": "^1.3",
+        "react/promise": "^2.10"
+    },
+    "autoload": {
+        "psr-4": {
+            "PFinal\\Memo\\Client\\": "./"
+        }
+    },
+    "authors": [
+        {
+            "name": "PFinal",
+            "email": "lampxiezi@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable"
+}

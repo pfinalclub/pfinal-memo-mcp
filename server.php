@@ -14,16 +14,11 @@ $logger->pushHandler(new StreamHandler('php://stderr', Logger::INFO));
 
 // 创建服务器配置
 $config = new ServerConfig([
-    'transport' => 'stdio',
-    'host' => '127.0.0.1',    // 添加主机配置
-    'port' => 8080,           // 添加端口配置
+    'transport' => 'ws',      // 使用 WebSocket 传输
+    'host' => '127.0.0.1',    // 主机配置
+    'port' => 8899,           // 端口配置
     'log_level' => 'info',
     'log_file' => 'php://stderr',
-    'stdio' => [
-        'mode' => 'optimized',
-        'buffer_interval' => 10,
-        'non_blocking' => true,
-    ],
     'session' => [
         'backend' => 'memory',
         'ttl' => 3600,
@@ -41,8 +36,15 @@ $config = new ServerConfig([
 // 创建 MCP 服务器
 $server = new Server($config, $logger);
 
+// 由于 PFPMcp 的 Server 类没有 registerTool 方法，我们需要直接访问 ToolManager
+// 通过反射来注册工具
+$reflection = new ReflectionClass($server);
+$toolManagerProperty = $reflection->getProperty('toolManager');
+$toolManagerProperty->setAccessible(true);
+$toolManager = $toolManagerProperty->getValue($server);
+
 // 注册备忘录工具
-$server->registerTool(new MemoServer());
+$toolManager->registerTool(new MemoServer());
 
 // 启动服务器
 $logger->info('Starting Memo MCP server...');

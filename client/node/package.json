@@ -1,0 +1,32 @@
+{
+  "name": "cursor-memo-client",
+  "version": "1.0.0",
+  "description": "Cursor Memo MCP WebSocket Client",
+  "type": "module",
+  "main": "cursor-client.js",
+  "scripts": {
+    "start": "node cursor-client.js",
+    "list": "node cursor-client.js list",
+    "search": "node cursor-client.js search",
+    "interactive": "node cursor-client.js interactive",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "mcp",
+    "cursor",
+    "memo",
+    "websocket",
+    "client"
+  ],
+  "author": "PFinal",
+  "license": "MIT",
+  "dependencies": {
+    "ws": "^8.14.2",
+    "chalk": "^5.3.0",
+    "ora": "^7.0.1",
+    "commander": "^11.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

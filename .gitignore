@@ -9,3 +9,4 @@
 .vscode/
 vendor/
 .ruler/
+client/node/node_modules/
